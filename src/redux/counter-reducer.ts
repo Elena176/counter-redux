@@ -1,19 +1,12 @@
 import {MessageType} from '../component/DisplayCounter/DisplayCounter';
 
-// type InitialStateType = {
-//     counter: number
-//     disabledInc: boolean
-//     disabledReset: boolean
-//     messageItem: string
-// }
-
 const initialState = {
     counter: 0,
     disabledInc: true,
     disabledReset: true,
     messageItem: '',
 }
-type InitialStateType = typeof initialState
+export type InitialStateCounterReducerType = typeof initialState;
 
 type ActionTypes = ReturnType<typeof setCounter>
     | ReturnType<typeof incCounter>
@@ -21,7 +14,7 @@ type ActionTypes = ReturnType<typeof setCounter>
     | ReturnType<typeof disableButtonInc>
     | ReturnType<typeof disableButtonReset>
 
-export const counterReducer = (state: InitialStateType = initialState, action: ActionTypes): InitialStateType => {
+export const counterReducer = (state: InitialStateCounterReducerType = initialState, action: ActionTypes): InitialStateCounterReducerType => {
     switch (action.type) {
         case 'SET-COUNTER': {
             return {

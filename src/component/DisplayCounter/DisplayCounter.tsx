@@ -3,17 +3,21 @@ import {Button} from '../Button/Button';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppStateType} from '../../redux/store';
-import {disableButtonInc, disableButtonReset, incCounter, setCounter} from '../../redux/counter-reducer';
+import {
+    disableButtonInc,
+    disableButtonReset,
+    incCounter,
+    InitialStateCounterReducerType,
+    setCounter
+} from '../../redux/counter-reducer';
+import {InitialStateSettingsReducerType} from '../../redux/setting-reducer';
 
 export type MessageType = 'Setting' | 'Error' | 'Count'
 
 export const DisplayCounter = () => {
-    const counter = useSelector<AppStateType, number>(state => state.counter.counter)
-    const disabledInc = useSelector<AppStateType, boolean>(state => state.counter.disabledInc)
-    const disabledReset = useSelector<AppStateType, boolean>(state => state.counter.disabledReset)
-    const maxValue = useSelector<AppStateType, number>(state => state.settings.maxValue)
-    const startValue = useSelector<AppStateType, number>(state => state.settings.startValue)
-    const messageValue = useSelector<AppStateType, string>(state => state.counter.messageItem)
+    const {counter, disabledInc, disabledReset, messageItem} = useSelector<AppStateType, InitialStateCounterReducerType>(state => state.counter)
+    const {maxValue, startValue} = useSelector<AppStateType, InitialStateSettingsReducerType>(state => state.settings)
+
     const dispatch = useDispatch();
 
     const classError = counter === maxValue ? s.error : s.counter
@@ -30,7 +34,7 @@ export const DisplayCounter = () => {
     }
 
     const message = () => {
-        switch (messageValue) {
+        switch (messageItem) {
             case 'Setting': {
                 return <div> enter values and press 'set' </div>;
             }
