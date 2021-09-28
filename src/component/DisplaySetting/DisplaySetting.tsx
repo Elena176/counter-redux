@@ -1,9 +1,10 @@
 import s from '../../App.module.css';
 import {Input} from '../Input/Input';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppStateType} from '../../redux/store';
 import {
+    getMaxValueFromLocalStorage, getStartValueFromLocalStorage,
     InitialStateSettingsReducerType,
     setDisableButtonSet,
     setMaxValue,
@@ -25,11 +26,21 @@ export const DisplaySetting = () => {
 
     const dispatch = useDispatch();
 
-    const checkValues = (value: number, valueStartMax: number) => {
+    useEffect(() => {
+        const getValueString = localStorage.getItem('values')
+        if (getValueString) {
+            let values = JSON.parse(getValueString)
+            dispatch(getMaxValueFromLocalStorage(values.maxValue))
+            dispatch(getStartValueFromLocalStorage(values.startValue))
+        }
+    }, [dispatch])
+
+    const conditions = (startValue < 0 || maxValue < 0) || maxValue < startValue || maxValue === startValue;
+    const checkValues = () => {
         dispatch(setDisableButtonSet(false))
         dispatch(disableButtonInc(true))
         dispatch(disableButtonReset(true))
-        if (value < 0 || value === valueStartMax) {
+        if (conditions) {
             dispatch(setMessageItem('Error'))
             dispatch(setDisableButtonSet(true))
         } else {
@@ -39,12 +50,12 @@ export const DisplaySetting = () => {
 
     const onChangeStartValue = (startValue: number) => {
         dispatch(setStartValue(startValue));
-        checkValues(startValue, maxValue)
+        checkValues()
     }
 
     const onChangeMaxValue = (maxValue: number) => {
         dispatch(setMaxValue(maxValue))
-        checkValues(maxValue, startValue)
+        checkValues()
     }
 
     const onClickButtonSet = () => {
@@ -68,7 +79,7 @@ export const DisplaySetting = () => {
                                value={maxValue}
                                onChange={onChangeMaxValue}/>
                     </span>
-                    <span> {'start value: '}
+                <span> {'start value: '}
                     <Input className={classErrorInput}
                            value={startValue}
                            onChange={onChangeStartValue}/>
